@@ -1,5 +1,5 @@
 from llama_cpp import Llama
-
+from llama_summarizer.random_article import get_random_wikipedia_article
 # Path to your quantized model
 
 model_path = "/Users/aygalic/github/llama-summarizer/models/Q4_K_M.gguf"
@@ -33,5 +33,34 @@ for message in messages:
     print(f"{message['role']}: {message['content']}")
 
 print(f"assistant: {response}")
+
+
+# Usage
+title, content = get_random_wikipedia_article()
+
+
+print(f"Title: {title}")
+print(f"Content:\n{content}")
+
+
+breakpoint()
+
+# Example usage
+messages = [
+    {"role": "system", "content": "You are an AI assistant that is very concise in its answer and your purpose is to summarize inputs!"},
+    {"role": "user", "content": f"can you summarize the following article? \n {title=} {content=}"},
+]
+
+response = generate_chat_response(messages)
+print("Chat:")
+for message in messages:
+    print(f"{message['role']}: {message['content']}")
+
+print(f"assistant: {response}")
+
+
+
+
+
 
 breakpoint()

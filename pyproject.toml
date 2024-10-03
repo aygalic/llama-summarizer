@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "llama-summarizer"
+name = "llama_summarizer"
 version = "0.1.0"
 description = "Built with llama"
 authors = ["aygalic <aygalic@hotmail.fr>"]
