@@ -5,7 +5,7 @@ from llama_cpp import Llama
 model_path = "/Users/aygalic/github/llama-summarizer/models/Q4_K_M.gguf"
 
 # Initialize the model
-llm = Llama(model_path=model_path, n_ctx=2048, n_threads=4)
+llm = Llama(model_path=model_path, n_ctx=2048, n_threads=4, verbose=False)
 
 # Function to generate text
 def generate_chat_response(messages, max_tokens=500):
@@ -33,7 +33,5 @@ for message in messages:
     print(f"{message['role']}: {message['content']}")
 
 print(f"assistant: {response}")
-
-
 
 breakpoint()
