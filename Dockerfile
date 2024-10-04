@@ -32,8 +32,11 @@ EXPOSE 8000
 ENV PYTHONPATH=/app
 
 # Run the application
-CMD ["python", "-m", "uvicorn", "app.run_quantized:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["python", "-m", "uvicorn", "app.run_quantized:app", "--host", "0.0.0.0", "--port", "7860"]
 
-#CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# use :
+# curl -X POST "http://localhost:8000/llm_on_cpu" -H "Content-Type: application/json" -d '{"item": "hi"}'
 
-# uvicorn app.run_quantized:app --host 0.0.0.0 --port 8000
+
+# curl -X POST "https://aygaic-tiny-llamma.hf.space/llm_on_cpu" -H "Content-Type: application/json" -d '{"item": "hi"}'
+
