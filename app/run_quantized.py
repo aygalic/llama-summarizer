@@ -1,13 +1,18 @@
 from fastapi import FastAPI
 from llama_summarizer.chat import Chat
+from pydantic import BaseModel
 
 app = FastAPI()
 
 chat = Chat()
 
+class Query(BaseModel):
+    item: str
+
+
 @app.post("/llm_on_cpu")
-async def stream(item: str):
-    return chat.single_query(item)
+async def stream(query: Query):
+    return chat.single_query(query.item)
 
 '''
 from llama_summarizer.random_article import get_random_wikipedia_article
