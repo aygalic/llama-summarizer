@@ -13,10 +13,10 @@ torch = "^2.4.1"
 transformers = "^4.45.1"
 accelerate = "^0.34.2"
 llama-models = "^0.0.38"
-quanto = "^0.2.0"
 protobuf = "^5.28.2"
 gguf = "^0.10.0"
 llama-cpp-python = "^0.3.1"
+fastapi = "^0.115.0"
 
 
 [build-system]
