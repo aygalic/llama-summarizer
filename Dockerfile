@@ -24,10 +24,12 @@ RUN poetry config virtualenvs.create false \
     && poetry install --no-interaction --no-ansi
 
 # Copy the rest of the application code
-COPY . /app
+COPY ./llama_summarizer /app/llama_summarizer
+COPY ./models /app/models
+COPY ./app /app/app
 
-# Make port 8000 available to the world outside this container
-EXPOSE 8000
+# Make port 7860 available to the world outside this container
+EXPOSE 7860
 
 ENV PYTHONPATH=/app
 
@@ -35,8 +37,7 @@ ENV PYTHONPATH=/app
 CMD ["python", "-m", "uvicorn", "app.run_quantized:app", "--host", "0.0.0.0", "--port", "7860"]
 
 # use :
-# curl -X POST "http://localhost:8000/llm_on_cpu" -H "Content-Type: application/json" -d '{"item": "hi"}'
+# curl -X POST "http://localhost:7860/llm_on_cpu" -H "Content-Type: application/json" -d '{"item": "hi"}'
 
-
-# curl -X POST "https://aygaic-tiny-llamma.hf.space/llm_on_cpu" -H "Content-Type: application/json" -d '{"item": "hi"}'
+# curl -X POST "https://aygalic-tiny-llama.hf.space/llm_on_cpu" -H "Content-Type: application/json" -d '{"item": "hi"}'
 
