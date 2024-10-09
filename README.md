@@ -14,3 +14,14 @@ Check out the configuration reference at https://huggingface.co/docs/hub/spaces-
 
 # llama-summarizer
 Summarization tool built with Llama
+
+
+# Run the app locally:
+
+docker build -t tiny-llama .
+
+docker run -p 7860:7860 tiny-llama
+
+curl -X POST "http://localhost:7860/llm_on_cpu" -H "Content-Type: application/json" -d '{"item": "hi"}'
+
+Built with Llama.
