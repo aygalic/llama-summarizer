@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.responses import StreamingResponse
 from llama_summarizer.chat import Chat
 from pydantic import BaseModel
 
@@ -9,11 +10,19 @@ chat = Chat()
 class Query(BaseModel):
     item: str
 
-
+# Legacy route - keeps existing behavior
 @app.post("/llm_on_cpu")
-async def stream(query: Query):
+def legacy_query(query: Query):
     return chat.single_query(query.item)
 
+# New streaming route
+@app.post("/llm_on_cpu_stream")
+async def stream_query(query: Query):
+    async def generate():
+        for token in chat.single_query_stream(query.item):
+            yield f"data: {token}\n\n"
+
+    return StreamingResponse(generate(), media_type="text/event-stream")
 '''
 from llama_summarizer.random_article import get_random_wikipedia_article
 

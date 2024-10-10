@@ -7,11 +7,11 @@ class Chat():
         self.llm = Llama(model_path=MODEL_PATH, n_ctx=2048, n_threads=4, verbose=False)
         self.max_tokens = 500
 
-    def single_query(self, message:str) -> str:
+    def single_query(self, message: str) -> str:
         messages = [
             {
                 "role": "system",
-                "content": "You are an AI assistant that respond to user request and is very concise in its answers."
+                "content": "You are an AI assistant that responds to user requests and is very concise in its answers."
             },
             {
                 "role": "user",
@@ -20,17 +20,34 @@ class Chat():
         ]
         return self._generate_response(messages)
 
-    def _generate_response(self, query:str) -> str:
+    def single_query_stream(self, message: str):
+        messages = [
+            {
+                "role": "system",
+                "content": "You are an AI assistant that responds to user requests and is very concise in its answers."
+            },
+            {
+                "role": "user",
+                "content": message
+            },
+        ]
+        yield from self._generate_response_stream(messages)
 
-        # Convert messages to a single string prompt
+    def _generate_response(self, query: list) -> str:
+        prompt = self._create_prompt(query)
+        output = self.llm(prompt, max_tokens=self.max_tokens, stop=["user:", "system:", "\n"])
+        return output['choices'][0]['text'].strip()
+
+    def _generate_response_stream(self, query: list):
+        prompt = self._create_prompt(query)
+        for output in self.llm(prompt, max_tokens=self.max_tokens, stop=["user:", "system:", "\n"], stream=True):
+            yield output['choices'][0]['text']
+
+    def _create_prompt(self, query: list) -> str:
         prompt = ""
         for message in query:
             role = message["role"]
             content = message["content"]
             prompt += f"{role}: {content}\n"
         prompt += "assistant: "
-
-        # Generate response
-        output = self.llm(prompt, max_tokens=self.max_tokens, stop=["user:", "system:", "\n"])
-        return output['choices'][0]['text'].strip()
-
+        return prompt
