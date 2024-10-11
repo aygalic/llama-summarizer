@@ -1,7 +1,9 @@
 from fastapi import FastAPI
-from fastapi.responses import StreamingResponse
+from fastapi.responses import StreamingResponse, FileResponse
 from llama_summarizer.chat import Chat
 from pydantic import BaseModel
+from fastapi.staticfiles import StaticFiles
+
 
 app = FastAPI()
 
@@ -23,6 +25,16 @@ async def stream_query(query: Query):
             yield f"data: {token}\n\n"
 
     return StreamingResponse(generate(), media_type="text/event-stream")
+
+
+app.mount("/", StaticFiles(directory="static", html=True), name="static")
+
+@app.get("/")
+def index() -> FileResponse:
+    return FileResponse(path="/app/static/index.html", media_type="text/html")
+
+
+
 '''
 from llama_summarizer.random_article import get_random_wikipedia_article
 
