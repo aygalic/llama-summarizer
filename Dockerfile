@@ -27,6 +27,7 @@ RUN poetry config virtualenvs.create false \
 COPY ./llama_summarizer /app/llama_summarizer
 COPY ./models /app/models
 COPY ./app /app/app
+COPY ./static /app/static
 
 # Make port 7860 available to the world outside this container
 EXPOSE 7860
