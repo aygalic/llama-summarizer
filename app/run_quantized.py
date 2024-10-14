@@ -12,13 +12,47 @@ chat = Chat()
 class Query(BaseModel):
     item: str
 
-# Legacy route - keeps existing behavior
-@app.post("/llm_on_cpu")
-def legacy_query(query: Query):
-    return chat.single_query(query.item)
 
-# New streaming route
+@app.post("/llm_on_cpu")
+def legacy_summary(query: Query) -> str:
+    """Legacy function to ask for a summary without using token streaming.
+
+    Parameters
+    ----------
+    query : Query
+        Article to summarize
+
+    Returns
+    -------
+    str
+        Summary provided by the LLM
+    """
+    return chat.request_summary(query.item)
+
+
 @app.post("/llm_on_cpu_stream")
+async def stream_summary(query: Query) -> StreamingResponse:
+    """Request summary and stream the response
+
+    Parameters
+    ----------
+    query : Query
+        Article to summarize
+
+    Returns
+    -------
+    StreamingResponse
+        Streaming summary provided by the LLM
+
+    """
+    async def generate():
+        for token in chat.request_summary_stream(query.item):
+            yield f"data: {token}\n\n"
+
+    return StreamingResponse(generate(), media_type="text/event-stream")
+
+
+@app.post("/stream_misc_query")
 async def stream_query(query: Query):
     async def generate():
         for token in chat.single_query_stream(query.item):
@@ -32,33 +66,3 @@ app.mount("/", StaticFiles(directory="static", html=True), name="static")
 @app.get("/")
 def index() -> FileResponse:
     return FileResponse(path="/app/static/index.html", media_type="text/html")
-
-
-
-'''
-from llama_summarizer.random_article import get_random_wikipedia_article
-
-title, content = get_random_wikipedia_article()
-
-
-print(f"Title: {title}")
-print(f"Content:\n{content}")
-
-
-breakpoint()
-
-summary_prompt = f"can you summarize the following article? \n {title=} {content=}"
-
-response = chat.single_query(summary_prompt)
-
-
-print(f"assistant: {response}")
-
-
-
-
-
-
-breakpoint()
-
-'''

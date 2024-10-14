@@ -7,11 +7,11 @@ class Chat():
         self.llm = Llama(model_path=MODEL_PATH, n_ctx=2048, n_threads=4, verbose=False)
         self.max_tokens = 500
 
-    def single_query(self, message: str) -> str:
+    def request_summary(self, message: str) -> str:
         messages = [
             {
                 "role": "system",
-                "content": "You are an AI assistant that responds to user requests and is very concise in its answers."
+                "content": "You aim is to summarize and article in the most concise way possible."
             },
             {
                 "role": "user",
@@ -19,6 +19,20 @@ class Chat():
             },
         ]
         return self._generate_response(messages)
+
+    def request_summary_stream(self, message: str):
+        messages = [
+            {
+                "role": "system",
+                "content": "You aim is to summarize and article in the most concise way possible."
+            },
+            {
+                "role": "user",
+                "content": message
+            },
+        ]
+        yield from self._generate_response_stream(messages)
+
 
     def single_query_stream(self, message: str):
         messages = [
