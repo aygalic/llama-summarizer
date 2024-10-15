@@ -47,6 +47,28 @@ class Chat():
         ]
         yield from self._generate_response_stream(messages)
 
+
+
+    def stream_chat(self, messages: list[tuple[str, str]]):
+
+        prompt = [
+            {
+                "role": "system",
+                "content": "You are an AI assistant that responds to user requests and is very concise in its answers."
+            }
+        ]
+        for role, content in messages:
+            prompt.append(
+                {
+                    "role": role,
+                    "content": content
+                }
+            )
+
+
+
+        yield from self._generate_response_stream(prompt)    
+
     def _generate_response(self, query: list) -> str:
         prompt = self._create_prompt(query)
         output = self.llm(prompt, max_tokens=self.max_tokens, stop=["user:", "system:", "\n"])

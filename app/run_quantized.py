@@ -12,6 +12,9 @@ chat = Chat()
 class Query(BaseModel):
     item: str
 
+class ChatHistory(BaseModel):
+    item: list[tuple[str, str]]
+
 
 @app.post("/llm_on_cpu")
 def legacy_summary(query: Query) -> str:
@@ -59,6 +62,18 @@ async def stream_query(query: Query):
             yield f"data: {token}\n\n"
 
     return StreamingResponse(generate(), media_type="text/event-stream")
+
+
+@app.post("/stream_chat")
+async def stream_chat(hist: ChatHistory):
+    async def generate():
+        for token in chat.stream_chat(hist.item):
+            yield f"data: {token}\n\n"
+
+    return StreamingResponse(generate(), media_type="text/event-stream")
+
+
+
 
 
 app.mount("/", StaticFiles(directory="static", html=True), name="static")

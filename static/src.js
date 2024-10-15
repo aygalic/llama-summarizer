@@ -1,18 +1,43 @@
-const submitBtn = document.getElementById('submit-btn');
-const inputArea = document.getElementById('input-area');
-const outputArea = document.getElementById('output-area');
+const chatArea = document.getElementById('chat-area');
+const chatInput = document.getElementById('chat-input');
+const sendBtn = document.getElementById('send-btn');
 
-submitBtn.addEventListener('click', async function() {
-    const input = inputArea.value;
-    outputArea.textContent = 'Generating response...';
+class ChatHistory {
+    constructor() {
+        this.history = [];
+    }
+
+    addMessage(role, content) {
+        this.history.push([role, content]);
+    }
+}
+
+const chatHistory = new ChatHistory();
+
+function appendMessage(role, content) {
+    const messageDiv = document.createElement('div');
+    messageDiv.classList.add('chat-message', `${role}-message`);
+    messageDiv.textContent = content;
+    chatArea.appendChild(messageDiv);
+    chatArea.scrollTop = chatArea.scrollHeight;
+}
+
+sendBtn.addEventListener('click', async function() {
+    const input = chatInput.value.trim();
+    if (!input) return;
+
+    appendMessage('user', input);
+    chatInput.value = '';
+
+    chatHistory.addMessage('user', input);
 
     try {
-        const response = await fetch('/llm_on_cpu_stream', {
+        const response = await fetch('/stream_chat', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ item: input }),
+            body: JSON.stringify({ item: chatHistory.history }),
         });
 
         if (!response.ok) {
@@ -21,7 +46,7 @@ submitBtn.addEventListener('click', async function() {
 
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
-        outputArea.textContent = '';
+        let modelResponse = '';
 
         while (true) {
             const { value, done } = await reader.read();
@@ -31,12 +56,27 @@ submitBtn.addEventListener('click', async function() {
             for (const line of lines) {
                 if (line.startsWith('data: ')) {
                     const token = line.slice(6);
-                    outputArea.textContent += token;
+                    modelResponse += token;
+                    // Clear previous model response and update with new one
+                    const lastMessage = chatArea.lastElementChild;
+                    if (lastMessage && lastMessage.classList.contains('model-message')) {
+                        lastMessage.textContent = modelResponse;
+                    } else {
+                        appendMessage('model', modelResponse);
+                    }
                 }
             }
         }
+
+        chatHistory.addMessage('assistant', modelResponse);
     } catch (error) {
         console.error('Error:', error);
-        outputArea.textContent = 'An error occurred while fetching the response.';
+        appendMessage('model', 'An error occurred while fetching the response.');
+    }
+});
+
+chatInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        sendBtn.click();
     }
 });
