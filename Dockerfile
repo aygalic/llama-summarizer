@@ -16,7 +16,6 @@ RUN curl -sSL https://install.python-poetry.org | python3 -
 # Add Poetry to PATH
 ENV PATH="${PATH}:/root/.local/bin"
 
-# Copy the pyproject.toml and poetry.lock files
 COPY pyproject.toml poetry.lock* /app/
 
 # Install project dependencies
@@ -36,9 +35,3 @@ ENV PYTHONPATH=/app
 
 # Run the application
 CMD ["python", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "7860"]
-
-# use :
-# curl -X POST "http://localhost:7860/llm_on_cpu" -H "Content-Type: application/json" -d '{"item": "hi"}'
-
-# curl -X POST "https://aygalic-tiny-llama.hf.space/llm_on_cpu" -H "Content-Type: application/json" -d '{"item": "hi"}'
-
