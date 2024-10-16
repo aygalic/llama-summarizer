@@ -1,22 +1,25 @@
 from fastapi import FastAPI
-from fastapi.responses import StreamingResponse, FileResponse
-from llama_summarizer.chat import Chat
-from pydantic import BaseModel
+from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
+from pydantic import BaseModel
 
+from llama_summarizer.chat import Chat
 
 app = FastAPI()
 
 chat = Chat()
+summarizer = Chat("Your aim is to provide a concise summary of the user's article")
+
 
 class Query(BaseModel):
     item: str
+
 
 class ChatHistory(BaseModel):
     item: list[tuple[str, str]]
 
 
-@app.post("/llm_on_cpu_stream") # legacy route
+@app.post("/llm_on_cpu_stream")  # legacy route
 @app.post("/summarize")
 async def stream_summary(query: Query) -> StreamingResponse:
     """Request summary and stream the response.
@@ -33,10 +36,8 @@ async def stream_summary(query: Query) -> StreamingResponse:
         Streaming summary provided by the LLM
 
     """
-    async def generate():
-        summarizer = Chat(
-            "Your aim is to summarize and article in the most concise way possible")
 
+    async def generate():
         for token in summarizer.generate_summary(query.item):
             yield f"data: {token}\n\n"
 
@@ -65,8 +66,8 @@ async def stream_chat(hist: ChatHistory) -> StreamingResponse:
     return StreamingResponse(generate(), media_type="text/event-stream")
 
 
-
 app.mount("/", StaticFiles(directory="static", html=True), name="static")
+
 
 @app.get("/")
 def index() -> FileResponse:
