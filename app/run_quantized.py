@@ -1,3 +1,4 @@
+"""API definition"""
 from fastapi import FastAPI
 from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
@@ -12,10 +13,12 @@ summarizer = Chat("Your aim is to provide a concise summary of the user's articl
 
 
 class Query(BaseModel):
+    """Query class for FastAPI"""
     item: str
 
 
 class ChatHistory(BaseModel):
+    """ChatHistory class for FastAPI"""
     item: list[tuple[str, str]]
 
 
@@ -71,4 +74,11 @@ app.mount("/", StaticFiles(directory="static", html=True), name="static")
 
 @app.get("/")
 def index() -> FileResponse:
+    """Take care of serving the dynamic web interface (for hugging face spaces)
+
+    Returns
+    -------
+    FileResponse
+        Mounted file system.
+    """
     return FileResponse(path="/app/static/index.html", media_type="text/html")
