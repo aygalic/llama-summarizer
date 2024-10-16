@@ -1,8 +1,18 @@
+"""Chat interface with local Llama"""
 from llama_cpp import Llama
 from . import MODELS_DIR
 MODEL_PATH = str(MODELS_DIR / "Q4_K_M.gguf")
 
 class Chat():
+    """Chat object used to interface with LLM. 
+    Can be used for chat or summary requests.
+
+    Parameters
+    ----------
+    init_prompt : str | None, optional
+        Prompt specifying agent role, by default None
+    """
+
     def __init__(self, init_prompt : str | None = None):
         self.llm = Llama(model_path=MODEL_PATH, n_ctx=2048, n_threads=4, verbose=False)
         self.max_tokens = 500
