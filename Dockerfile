@@ -35,7 +35,7 @@ EXPOSE 7860
 ENV PYTHONPATH=/app
 
 # Run the application
-CMD ["python", "-m", "uvicorn", "app.run_quantized:app", "--host", "0.0.0.0", "--port", "7860"]
+CMD ["python", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "7860"]
 
 # use :
 # curl -X POST "http://localhost:7860/llm_on_cpu" -H "Content-Type: application/json" -d '{"item": "hi"}'
