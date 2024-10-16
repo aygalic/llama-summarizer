@@ -38,3 +38,42 @@ h1 {
 #submit-btn:hover {
     background-color: #45a049;
 }
+
+
+/* Added inline styles for the chat interface and conversation history */
+.main-container {
+    display: flex;
+    gap: 20px;
+}
+.chat-container {
+    flex: 2;
+}
+
+.chat-area {
+    height: 400px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+.chat-message {
+    margin-bottom: 10px;
+    padding: 5px;
+    border-radius: 5px;
+}
+.user-message {
+    background-color: #e6f2ff;
+    text-align: right;
+}
+.model-message {
+    background-color: #f0f0f0;
+}
+#chat-input {
+    width: calc(100% - 70px);
+    padding: 10px;
+    margin-right: 10px;
+}
+#send-btn {
+    width: 60px;
+    padding: 10px;
+}
