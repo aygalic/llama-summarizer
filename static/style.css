@@ -56,7 +56,7 @@ h1 {
 #chat-input {
     width: calc(100% - 70px);
     padding: 10px;
-    margin-right: 10px;
+    margin-bottom: 10px;
 }
 #send-btn {
     width: 60px;
