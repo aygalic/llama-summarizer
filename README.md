@@ -22,14 +22,12 @@ Summarization and chatbot tool built with Llama
 
 ~~~bash
 docker build -t tiny-llama .
-
 docker run -p 7860:7860 tiny-llama
 ~~~
 
 ### Making a summary request
 
 ~~~bash
-
 curl -X POST "http://localhost:7860/llm_on_cpu" -H "Content-Type: application/json" -d '{"item": "hi"}'
 ~~~
 
