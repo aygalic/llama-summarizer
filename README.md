@@ -38,6 +38,9 @@ Available at http://0.0.0.0:7860 when running locally with docker.
 Or live on [Hugging Face Spaces](https://huggingface.co/spaces/aygalic/tiny-llama)
 
 ##### TODO 
+
 - Add fine tuning pipeline using LoRA
+- Better test coverage
+- Workflow for testing
 
 Built with Llama.
