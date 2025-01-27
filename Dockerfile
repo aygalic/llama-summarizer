@@ -16,14 +16,15 @@ RUN curl -sSL https://install.python-poetry.org | python3 -
 # Add Poetry to PATH
 ENV PATH="${PATH}:/root/.local/bin"
 
-COPY pyproject.toml poetry.lock* /app/
+COPY README.md pyproject.toml poetry.lock* /app/
+
+COPY ./llama_summarizer /app/llama_summarizer
 
 # Install project dependencies
 RUN poetry config virtualenvs.create false \
     && poetry install --no-interaction --no-ansi
 
 # Copy the rest of the application code
-COPY ./llama_summarizer /app/llama_summarizer
 COPY ./models /app/models
 COPY ./app /app/app
 COPY ./static /app/static
